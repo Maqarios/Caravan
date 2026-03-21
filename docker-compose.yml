@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  bot:
+    build:
+      context: ./bot
+      dockerfile: Dockerfile
+    container_name: caravan-bot
+    restart: unless-stopped
+    env_file:
+      - .env
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: caravan-web
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "${WEB_PORT:-443}:443"
