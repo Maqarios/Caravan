@@ -39,8 +39,9 @@ class CaravanBot(commands.Bot):
             help_command=None,  # TODO: add help command
         )
 
-        # Database connection string
-        self.db_connection_string = os.getenv("MSSQL_CONNECTION_STRING")
+        # List of extensions (cogs) to load
+        self._cogs = []
+
         logger.info("Bot instance created")
 
     async def setup_hook(self):
@@ -48,7 +49,16 @@ class CaravanBot(commands.Bot):
         logger.info("Running setup hook...")
 
         # Load cogs
-        # TODO: add cogs
+        for cog in self._cogs:
+            try:
+                await self.load_extension(cog)
+                logger.info(f"Loaded cog successfully: {cog}")
+            except (
+                commands.ExtensionNotFound,
+                commands.ExtensionFailed,
+                commands.ExtensionAlreadyLoaded,
+            ) as e:
+                logger.error(f"Failed to load extension {cog}: {e}")
 
         # Sync commands
         await self.tree.sync()
