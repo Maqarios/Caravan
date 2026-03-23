@@ -1,12 +1,12 @@
 # Caravan Logging System
 
-Comprehensive logging documentation for bot and web applications.
+Comprehensive logging documentation for bot, db and web applications.
 
 ## Overview
 
 The Caravan logging utility provides:
 - ✅ **Rotating file handlers** (10MB per file, 5 backups)
-- ✅ **Separate logs** for bot (`bot.log`) and web (`web.log`)
+- ✅ **Separate logs** for bot (`bot.log`), db (`db.log`) and web (`web.log`)
 - ✅ **Console output** for real-time monitoring
 - ✅ **Structured format** with timestamps, levels, and context
 - ✅ **Automatic log directory** creation
@@ -27,6 +27,20 @@ logger.error("Error occurred")
 logger.critical("Critical failure")
 ```
 
+### DB Usage
+
+```python
+from utils.logger import get_logger
+
+logger = get_logger('db')
+
+logger.debug("Debug information")
+logger.info("General information")
+logger.warning("Warning message")
+logger.error("Error occurred")
+logger.critical("Critical failure")
+```
+
 ### Web Usage
 
 ```python
@@ -34,8 +48,11 @@ from utils.logger import get_logger
 
 logger = get_logger('web')
 
-logger.info("Web server started on port 5000")
-logger.error("Database connection failed", exc_info=True)
+logger.debug("Debug information")
+logger.info("General information")
+logger.warning("Warning message")
+logger.error("Error occurred")
+logger.critical("Critical failure")
 ```
 
 ## Log Format
@@ -59,6 +76,8 @@ caravan/
 │   ├── bot.log          # Current bot logs
 │   ├── bot.log.1        # Previous rotation
 │   ├── bot.log.2        # Older rotation
+│   ├── db.log           # Current db logs
+│   ├── db.log.1         # Previous rotation
 │   ├── web.log          # Current web logs
 │   └── web.log.1        # Previous rotation
 ```
@@ -166,6 +185,9 @@ LOG_LEVEL=DEBUG
 ```bash
 # Watch bot logs in real-time
 tail -f logs/bot.log
+
+# Watch db logs
+tail -f logs/db.log
 
 # Watch web logs
 tail -f logs/web.log
