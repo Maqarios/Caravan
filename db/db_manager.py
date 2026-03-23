@@ -6,7 +6,7 @@ Handles MSSQL database connections and stored procedure execution.
 
 import threading
 from contextlib import contextmanager
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 import pyodbc
 

@@ -6,7 +6,6 @@ A Discord bot for Silkroad server management with MSSQL integration.
 
 import asyncio
 import os
-from pathlib import Path
 
 import discord
 from discord.ext import commands

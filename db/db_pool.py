@@ -4,7 +4,6 @@ Database Pool Manager
 Manages multiple database connections to different databases on the same server.
 """
 
-import os
 from typing import Dict, Optional
 
 from db_manager import DatabaseManager
