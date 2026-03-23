@@ -94,6 +94,31 @@ class CaravanBot(commands.Bot):
         logger.error(f"Command error in {ctx.command}: {error}", exc_info=error)
         await ctx.send("❌ An error occurred while processing your command.")
 
+    async def on_app_command_completion(
+        self, interaction: discord.Interaction, command: discord.app_commands.Command
+    ):
+        """Log when slash commands are successfully executed"""
+        # Extract command parameters
+        params = {}
+        if interaction.namespace:
+            params = {
+                key: value
+                for key, value in interaction.namespace.__dict__.items()
+                if not key.startswith("_")
+            }
+
+        # Format parameters for logging
+        params_str = (
+            ", ".join(f"{k}={v}" for k, v in params.items())
+            if params
+            else "no parameters"
+        )
+
+        logger.info(
+            f"Command executed: /{command.name} by {interaction.user} ({interaction.user.id}) "
+            f"in {interaction.guild.name if interaction.guild else 'DM'} - {params_str}"
+        )
+
     async def on_app_command_error(
         self, interaction: discord.Interaction, error: Exception
     ):
