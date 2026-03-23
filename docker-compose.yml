@@ -1,4 +1,26 @@
 services:
+  # Database service - handles all MSSQL operations
+  db:
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    container_name: caravan-db
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "${DB_SERVICE_PORT:-8080}:8080"
+    volumes:
+      - ./utils:/app/utils:ro
+      - ./logs:/app/logs:rw
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Discord bot service
   bot:
     build:
       context: ./bot
@@ -10,6 +32,9 @@ services:
     volumes:
       - ./utils:/app/utils:ro
       - ./logs:/app/logs:rw
+    depends_on:
+      db:
+        condition: service_healthy
 
   web:
     build:
@@ -24,3 +49,6 @@ services:
     volumes:
       - ./utils:/app/utils:ro
       - ./logs:/app/logs:rw
+    depends_on:
+      db:
+        condition: service_healthy

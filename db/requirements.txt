@@ -1,6 +1,4 @@
-discord.py>=2.3.0
 fastapi>=0.109.0
-Flask>=3.0.0
 httpx>=0.26.0
 pydantic>=2.5.0
 pyodbc>=5.0.0

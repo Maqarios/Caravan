@@ -14,6 +14,10 @@ Usage:
     # In web/main.py
     logger = get_logger('web')
     logger.info("Web server started")
+
+    # In db/main.py
+    logger = get_logger('db')
+    logger.info("Database service started")
 """
 
 import logging
@@ -39,13 +43,13 @@ _loggers = {}
 
 
 def get_logger(
-    app_type: Literal["bot", "web"], level: int = logging.INFO
+    app_type: Literal["bot", "web", "db"], level: int = logging.INFO
 ) -> logging.Logger:
     """
     Get or create a logger for the specified application type.
 
     Args:
-        app_type: Type of application ('bot' or 'web')
+        app_type: Type of application ('bot', 'web', or 'db')
         level: Logging level (default: logging.INFO)
 
     Returns:
@@ -97,12 +101,12 @@ def get_logger(
     return logger
 
 
-def set_log_level(app_type: Literal["bot", "web"], level: int) -> None:
+def set_log_level(app_type: Literal["bot", "web", "db"], level: int) -> None:
     """
     Change the logging level for an existing logger.
 
     Args:
-        app_type: Type of application ('bot' or 'web')
+        app_type: Type of application ('bot', 'web', or 'db')
         level: New logging level (e.g., logging.DEBUG, logging.WARNING)
 
     Example:
@@ -118,12 +122,12 @@ def set_log_level(app_type: Literal["bot", "web"], level: int) -> None:
         raise ValueError(f"Logger for '{app_type}' not found. Call get_logger() first.")
 
 
-def get_log_file_path(app_type: Literal["bot", "web"]) -> Path:
+def get_log_file_path(app_type: Literal["bot", "web", "db"]) -> Path:
     """
     Get the path to the log file for the specified application.
 
     Args:
-        app_type: Type of application ('bot' or 'web')
+        app_type: Type of application ('bot', 'web', or 'db')
 
     Returns:
         Path object pointing to the log file
