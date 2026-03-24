@@ -26,6 +26,7 @@ class AccountCog(commands.Cog):
         self.db_client = DatabaseClient()
         logger.info("AccountCog initialized")
 
+    # TODO: Add filter by role to a config file
     @app_commands.command(
         name="register",
         description="Register a new user account (automatically links to your Discord account)",
@@ -42,9 +43,6 @@ class AccountCog(commands.Cog):
         Args:
             username: Account username (max 25 chars)
             password: Account password (max 50 chars)
-            fullname: Full name (optional, max 30 chars, default: "Player")
-            sex: Sex/Gender (optional, M or F, default: M)
-            email: Email address (optional, max 50 chars)
 
         Note: Your Discord User ID is automatically stored for account verification.
         """
