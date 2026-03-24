@@ -185,7 +185,7 @@ class DatabaseManager:
         try:
             with self.get_cursor() as cursor:
                 # Build parameter placeholders
-                param_list = [parameters.get(key) for key in sorted(parameters.keys())]
+                param_list = list(parameters.values())
                 placeholders = ", ".join(["?" for _ in param_list])
 
                 # Execute stored procedure
@@ -247,7 +247,7 @@ class DatabaseManager:
         try:
             with self.get_cursor() as cursor:
                 # Build parameter placeholders
-                param_list = [parameters.get(key) for key in sorted(parameters.keys())]
+                param_list = list(parameters.values())
                 placeholders = ", ".join(["?" for _ in param_list])
 
                 # Execute stored procedure

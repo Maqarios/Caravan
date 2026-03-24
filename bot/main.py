@@ -40,7 +40,7 @@ class CaravanBot(commands.Bot):
         )
 
         # List of extensions (cogs) to load
-        self._cogs = []
+        self._cogs = ["cogs.account"]
 
         logger.info("Bot instance created")
 
@@ -104,7 +104,7 @@ class CaravanBot(commands.Bot):
             params = {
                 key: value
                 for key, value in interaction.namespace.__dict__.items()
-                if not key.startswith("_")
+                if not key.startswith("_") and not key == "password"
             }
 
         # Format parameters for logging
