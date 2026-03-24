@@ -14,13 +14,14 @@ from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException
 from pydantic import BaseModel
 
-from utils import get_logger
+from utils import get_logger, set_log_level
 
 # Load environment variables
 load_dotenv()
 
 # Initialize logger
 logger = get_logger("db")
+set_log_level("db", os.getenv("DB_LOG_LEVEL", 20))
 
 # Global database pool manager instance
 db_pool: Optional[DatabasePoolManager] = None

@@ -11,13 +11,14 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from utils import get_logger, setup_discord_logging
+from utils import get_logger, set_log_level, setup_discord_logging
 
 # Load environment variables
 load_dotenv()
 
 # Initialize logger
 logger = get_logger("bot")
+set_log_level("bot", os.getenv("BOT_LOG_LEVEL", 20))
 
 # Configure discord.py library logging
 setup_discord_logging()
