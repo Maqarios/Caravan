@@ -8,8 +8,6 @@ services:
     restart: unless-stopped
     env_file:
       - .env
-    ports:
-      - "${DB_SERVICE_PORT:-8080}:8080"
     volumes:
       - ./utils:/app/utils:ro
       - ./logs:/app/logs:rw
