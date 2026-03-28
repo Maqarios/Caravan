@@ -5,8 +5,6 @@ This cog provides Discord commands for user account creation and management
 using the usp_AddUser stored procedure.
 """
 
-import hashlib
-import json
 from datetime import datetime
 
 import discord
@@ -63,39 +61,14 @@ class AccountCog(commands.Cog):
 
         # Get Discord user ID and use it as certificate ID
         discord_user_id = str(interaction.user.id)
-        hashed_password = hashlib.md5(
-            password.encode()
-        ).hexdigest()  # Password is md5 in db
+        result = await self.db_client.async_add_user(
+            username, password, discord_user_id
+        )
 
-        try:
-            # Prepare parameters for usp_AddUser stored procedure
-            parameters = {
-                "StrUserID": username,
-                "Password": hashed_password,
-                "SecPassword": hashed_password,  # Using same password for secondary (can be modified)
-                "FullName": None,
-                "Question": None,
-                "Answer": None,
-                "Sex": None,
-                "BirthDay": None,
-                "Province": None,
-                "Address": f"Discord User: {interaction.user.name}#{interaction.user.discriminator}",  # Store Discord tag
-                "Phone": None,
-                "Mobile": None,
-                "Email": f"{interaction.user.id}@discord.user",  # Discord ID as email fallback
-                "cid": discord_user_id,  # Certificate ID - Discord User ID
-                "RegIP": None,
-                "JID": 0,
-            }
+        logger.debug(f"Registering user: {result}")
 
-            # Execute stored procedure
-            result = await self.db_client.async_execute_procedure(
-                database="SRO_VT_ACCOUNT",
-                procedure_name="usp_AddUser",
-                parameters=parameters,
-            )
-
-            if result["success"] and result["affected_rows"] == 1:
+        if result["success"]:
+            if result["jid"]:
                 # Create success embed
                 embed = discord.Embed(
                     title="✅ Account Created Successfully",
@@ -118,22 +91,25 @@ class AccountCog(commands.Cog):
                 logger.info(
                     f"User '{username}' registered successfully and linked to Discord user {interaction.user.name} (ID: {interaction.user.id})"
                 )
-
             else:
-                error_msg = result.get("error", "Unknown error")
-
-                await interaction.followup.send(
-                    f"❌ Failed to create account: {error_msg}", ephemeral=True
+                # Create fail embed
+                embed = discord.Embed(
+                    title="❌ Account Creation failed",
+                    description=f"Username **{username}** is 'likely' taken",
+                    color=discord.Color.red(),
                 )
+                embed.timestamp = datetime.utcnow()
 
-                logger.error(f"Failed to register user '{username}': {error_msg}")
-
-        except Exception as e:
-            logger.error(f"Error in register_user command: {str(e)}", exc_info=True)
-            await interaction.followup.send(
-                "❌ An unexpected error occurred while creating your account. Please try again later.",
-                ephemeral=True,
+                await interaction.followup.send(embed=embed, ephemeral=True)
+        else:
+            embed = discord.Embed(
+                title="❌ Account Creation failed",
+                description=f"Internal server error. Contact an admin!",
+                color=discord.Color.red(),
             )
+            embed.timestamp = datetime.utcnow()
+
+            await interaction.followup.send(embed=embed, ephemeral=True)
 
 
 async def setup(bot):
